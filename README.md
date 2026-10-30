@@ -15,6 +15,12 @@
 
 <br>
 
+<img src="docs/images/alien-lab.jpg" alt="An Alien stalking through a laboratory" width="100%">
+
+<img src="docs/images/predator-fires.jpg" alt="The Predator among the fires of a cavern" width="32%">
+<img src="docs/images/predator-hangar.jpg" alt="The Predator in a hangar" width="32%">
+<img src="docs/images/marine-fight.jpg" alt="The Predator facing a Marine in a side mission" width="32%">
+
 <sub>The 2013 Android game rebuilt in Unity for Windows, with a new PC layer on top. <b>No game files included</b>: this repository holds the port's own code only, and you need your own purchased copy of the game.</sub>
 
 </div>
@@ -38,7 +44,11 @@
 
 <div align="center">
 
+<img src="docs/images/alien-queen.jpg" alt="The Alien Queen" width="49%">
+<img src="docs/images/predator-arena.jpg" alt="The Predator in a red lit arena" width="49%">
 <sub><b>Become the hunter, or the hive.</b> Fight through two campaigns as a Predator warrior and as an Alien, with combos, stealth, executions and upgrades.</sub>
+
+<sub>Screenshots from the PC port at the Ultra preset, 2560 x 1440.</sub>
 
 </div>
 
