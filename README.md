@@ -44,7 +44,7 @@
 
 <div align="center">
 
-<img src="docs/images/alien-queen.jpg" alt="The Alien Queen" width="49%">
+<img src="docs/images/alien-corridor.jpg" alt="An Alien in a lit corridor" width="49%">
 <img src="docs/images/predator-arena.jpg" alt="The Predator in a red lit arena" width="49%">
 <sub><b>Become the hunter, or the hive.</b> Fight through two campaigns as a Predator warrior and as an Alien, with combos, stealth, executions and upgrades.</sub>
 
