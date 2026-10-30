@@ -1,0 +1,11 @@
+# PC port of AVP Evolution: native plugin for the Unity 5.6 player with the upscalers that need one (NVIDIA DLSS, Intel XeSS).
+cmake_minimum_required(VERSION 3.20)
+project(pc_upscalers CXX)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDLL")
+set(EXT "${CMAKE_CURRENT_SOURCE_DIR}/../../tools/ext")
+set(UNITY_PLUGIN_API "${CMAKE_CURRENT_SOURCE_DIR}/../../tools/Unity567/Editor/Data/PluginAPI")
+add_library(pc_upscalers SHARED src/pc_upscalers.cpp)
+target_compile_features(pc_upscalers PRIVATE cxx_std_17)
+target_include_directories(pc_upscalers PRIVATE "${UNITY_PLUGIN_API}" "${EXT}/dlss/include" "${EXT}/xess/inc")
+target_link_libraries(pc_upscalers PRIVATE "${EXT}/dlss/lib/Windows_x86_64/x64/nvsdk_ngx_d.lib" d3d11)
+target_compile_definitions(pc_upscalers PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX _CRT_SECURE_NO_WARNINGS)

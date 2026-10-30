@@ -1,0 +1,25 @@
+# Build output
+/build/
+build/
+*.log
+
+# Never game files
+*.apk
+*.obb
+*.assets
+*.assets.split*
+*.resS
+*.resource
+*.unity3d
+/AVPE_Play/
+/AVPE_Project/
+/playstore/
+payload/
+launcher/payload_extra/
+
+# Third party binaries and SDKs: see BUILDING.md
+*.dll
+*.exe
+*.lib
+tools/ext/
+tools/Unity567/

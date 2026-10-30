@@ -1,0 +1,4 @@
+[submodule "launcher/trg-launcher"]
+	path = launcher/trg-launcher
+	url = https://github.com/TekRantGaming/trg-launcher.git
+	branch = avp-evolution
