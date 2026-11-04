@@ -14,7 +14,7 @@ string(STRIP "${AVP_VERSION}" AVP_VERSION)
 string(REPLACE "." "," _commas "${AVP_VERSION}")
 
 add_executable(avp_launcher WIN32 src/project.cpp src/launcher.rc)
-target_link_libraries(avp_launcher PRIVATE trg::launcher2)
+target_link_libraries(avp_launcher PRIVATE trg::launcher2 bcrypt)
 target_compile_definitions(avp_launcher PRIVATE PROJECT_VERSION="${AVP_VERSION}" PROJECT_VERSION_COMMAS=${_commas},0)
 if(MSVC)
   target_compile_options(avp_launcher PRIVATE /W4 /utf-8 /permissive-)

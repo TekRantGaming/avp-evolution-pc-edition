@@ -198,7 +198,8 @@ The project is `AVPE_Play/ExportedProject`, a local git repo with one commit per
 
 ## Launcher (TRG Launcher 2.0)
 - **Code:** `launcher/trg-launcher` (branch `avp-evolution`, local) adds Android APK installs (`InstallSource::kApk`), project settings sections and `local:` art. `launcher/avp_launcher` is this game's project.
-- **Payload:** `make_payload.ps1` puts `Build/PlayStore` and the art beside the launcher as `payload/`. Install checks the player's APK package name and OBB, then copies the payload into `games/avp_evolution`.
+- **Install (2026-11-04):** after checking the player's APK package name and OBB, `InstallFromApk` sets up the converter's tools in `converter/tools` (Python 3.12 embeddable with Pillow and texture2ddecoder wheels, AssetRipper 2.0.0, Unity's built-in shaders; each pinned by SHA-256), finds or silently installs Unity 5.6.7f1 (elevated), opens Unity for sign-in if `C:/ProgramData/Unity/Unity_v5.x.ulf` is missing, then runs `convert.py` in a job object with no window. Stage lines set the label; the bar moves with each stage's usual time, since Unity prints nothing for 25 minutes. The work folder, `games/avp_evolution_build`, is removed after a good build and kept after a failure or Cancel, so Install carries on. `AVP_PAYLOAD` still copies a built game, for development.
+- **Release:** `make_release.ps1` zips the launcher, the converter, `pack/port` and the DLSS/XeSS runtimes with the licences (about 62 MB), and stops if it finds a game file.
 
 ## The converter (2026-10-30 to 2026-11-04)
 A payload holds the game's assets, so it can't be shared. `converter/convert.py` makes the same game on the player's PC from their own APK and OBB, running AssetRipper and Unity 5.6.7 with no windows.
@@ -219,5 +220,5 @@ A payload holds the game's assets, so it can't be shared. `converter/convert.py`
 - **Still to do:**
   - The white Predator skins glow in brightly lit arenas.
   - DualSense and other non-XInput pads Rewired doesn't know are untested.
-  - The launcher still installs from a payload; it should run the converter instead, with its progress.
+  - Unity's silent install and its first sign-in haven't been tried on a PC without Unity.
   - Converter builds: the hangar lamps' colour, and the cloak, thermal vision, shields and other effects haven't been checked on screen.

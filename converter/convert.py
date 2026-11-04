@@ -295,7 +295,7 @@ def port(args):
 
 def unity(args):
     """Upgrades the project, un-batches the levels and builds the game, with no window."""
-    exe = os.path.join(args.tools, "Unity567", "Editor", "Unity.exe")
+    exe = args.unity or os.path.join(args.tools, "Unity567", "Editor", "Unity.exe")
     log = os.path.join(args.work, "unity.log")
     # Un-batching only works on freshly exported scenes, so a repeat of this stage only builds.
     done = os.path.join(args.work, "unbatched.txt")
@@ -308,9 +308,26 @@ def unity(args):
     open(done, "w").write("done")
 
 
+def art(args):
+    """The launcher's pictures for the game, cut from the game's own menu background and logo in this export."""
+    from PIL import Image
+    tex = os.path.join(assets(args), "Texture2D")
+    bg = Image.open(os.path.join(tex, "menu_background_predalien.png")).convert("RGB")
+    logo = Image.open(os.path.join(tex, "avp_logo.png")).convert("RGBA")
+    out = os.path.join(args.out, "launcher_art")
+    os.makedirs(out, exist_ok=True)
+    logo.save(os.path.join(out, "logo.png"))
+    bg.resize((1920, 960), Image.LANCZOS).crop((0, 120, 1920, 740)).save(os.path.join(out, "hero.png"))
+    cover = bg.resize((1800, 900), Image.LANCZOS).crop((600, 0, 1200, 900))
+    small = logo.resize((380, round(logo.height * 380 / logo.width)), Image.LANCZOS)
+    cover.paste(small, (110, 40), small)
+    cover.save(os.path.join(out, "grid.png"))
+    say("PROGRESS", "launcher art")
+
+
 STAGES = collections.OrderedDict([
     ("merge", merge), ("export", export), ("aperture", aperture), ("patch", patch), ("rewired", rewired), ("cleanup", cleanup), ("plugins", plugins),
-    ("shaders", shaders), ("clips", clips), ("textures", textures), ("port", port), ("unity", unity),
+    ("shaders", shaders), ("clips", clips), ("textures", textures), ("port", port), ("unity", unity), ("art", art),
 ])
 
 
@@ -321,6 +338,7 @@ def main():
     p.add_argument("--work", required=True)
     p.add_argument("--out", required=True)
     p.add_argument("--tools", default=os.path.join(HERE, "tools"))
+    p.add_argument("--unity", help="Unity 5.6.7f1's Unity.exe, if not in <tools>/Unity567")
     p.add_argument("--stages", default=",".join(STAGES))
     args = p.parse_args()
     os.makedirs(args.work, exist_ok=True)

@@ -4,15 +4,24 @@
 // The game reads its settings from games/avp_evolution/avp_evolution.toml (the avp_ keys below) when it starts:
 // see AVPE_Play/ExportedProject/Assets/Plugins/PCPort/PCSettings.cs.
 
+#include <algorithm>
+#include <atomic>
+#include <cstdio>
 #include <cstdlib>
 #include <filesystem>
+#include <functional>
 #include <string>
 #include <system_error>
+#include <thread>
 #include <vector>
 
+#include <trg/download.h>
 #include <trg/hub.h>
+#include <trg/platform.h>
 
 #include <windows.h>
+#include <bcrypt.h>
+#include <shellapi.h>
 
 #include "logo_png.h"
 
@@ -25,22 +34,23 @@ std::string Utf8(const fs::path& p) {
   return std::string(s.begin(), s.end());
 }
 
-// The port's program and data for this PC. Until the converter that builds the game from the player's APK and OBB
-// is finished, the install copies a prepared build (the "payload" folder beside the launcher) once the player's own
-// copy has been checked. AVP_PAYLOAD overrides the folder.
-fs::path PayloadDir() {
-  wchar_t buf[MAX_PATH] = L"";
-  if (GetEnvironmentVariableW(L"AVP_PAYLOAD", buf, MAX_PATH) > 0) return fs::path(buf);
-  GetModuleFileNameW(nullptr, buf, MAX_PATH);
-  return fs::path(buf).parent_path() / "payload";
+std::wstring Wide(const std::string& s) {
+  if (s.empty()) return std::wstring();
+  std::wstring w(MultiByteToWideChar(CP_UTF8, 0, s.data(), (int)s.size(), nullptr, 0), L'\0');
+  MultiByteToWideChar(CP_UTF8, 0, s.data(), (int)s.size(), w.data(), (int)w.size());
+  return w;
 }
 
-std::string InstallFromApk(trg::Task& task, const trg::hub::ApkInstall& in) {
-  const fs::path from = PayloadDir();
+fs::path ExeDir() {
+  wchar_t buf[MAX_PATH] = L"";
+  GetModuleFileNameW(nullptr, buf, MAX_PATH);
+  return fs::path(buf).parent_path();
+}
+
+// For development: AVP_PAYLOAD names an already built game, which the install copies instead of building one.
+std::string CopyPayload(trg::Task& task, const fs::path& from, const fs::path& dest) {
   std::error_code ec;
-  if (!fs::exists(from / "AVPEvolution.exe", ec))
-    return "The PC port files were not found beside the launcher (the payload folder). Download the launcher again.";
-  // Total size first, for progress.
+  if (!fs::exists(from / "AVPEvolution.exe", ec)) return "AVP_PAYLOAD has no AVPEvolution.exe: " + Utf8(from);
   long long total = 0, done = 0;
   std::vector<fs::path> files;
   for (fs::recursive_directory_iterator it(from, ec), end; !ec && it != end; it.increment(ec)) {
@@ -48,7 +58,6 @@ std::string InstallFromApk(trg::Task& task, const trg::hub::ApkInstall& in) {
     files.push_back(it->path());
     total += (long long)it->file_size(ec);
   }
-  const fs::path dest = fs::u8path(in.dest);
   task.SetLabel("Installing AVP Evolution");
   for (const fs::path& f : files) {
     if (task.cancelled()) return "Cancelled.";
@@ -59,6 +68,366 @@ std::string InstallFromApk(trg::Task& task, const trg::hub::ApkInstall& in) {
     done += (long long)fs::file_size(f, ec);
     task.Progress(done, total);
   }
+  return std::string();
+}
+
+// ------------------------------------------------------------- converter ---
+// The install builds the game on this PC from the player's own .apk and .obb: converter\convert.py, beside the
+// launcher, exports the game with AssetRipper and builds it with Unity 5.6.7f1. Nothing from the game comes with the
+// launcher. The tools are downloaded into converter\tools the first time, each checked against its SHA-256.
+
+struct Download {
+  const char* file;
+  const char* url;
+  const char* sha256;
+  const char* what;  // for the progress label
+};
+
+const Download kPython = {"python-3.12.10-embed-amd64.zip",
+                          "https://www.python.org/ftp/python/3.12.10/python-3.12.10-embed-amd64.zip",
+                          "4acbed6dd1c744b0376e3b1cf57ce906f9dc9e95e68824584c8099a63025a3c3", "Python"};
+const Download kPillow = {
+    "pillow-12.3.0-cp312-cp312-win_amd64.whl",
+    "https://files.pythonhosted.org/packages/45/89/da2f7971a317f83d807fdd4065c0af40208e59e692cc43d315a71a0e96d1/"
+    "pillow-12.3.0-cp312-cp312-win_amd64.whl",
+    "a2b55dd6b2a4c4b7d87ffa56bdb33fdc5fdb9a462173861a7bc097f17d91cb09", "Pillow"};
+const Download kDecoder = {
+    "texture2ddecoder-1.0.6-cp311-abi3-win_amd64.whl",
+    "https://files.pythonhosted.org/packages/ac/f8/cbbefcb1b3435aea8ef1b3d65622c933f79ea7c70af4d4571f667277cc86/"
+    "texture2ddecoder-1.0.6-cp311-abi3-win_amd64.whl",
+    "1bad8209d9dfbfc7daf13ea2e545236ea2bbc1e423b2992b6e7563909975a47b", "the texture decoder"};
+const Download kAssetRipper = {"AssetRipper_win_x64.zip",
+                               "https://github.com/AssetRipper/AssetRipper/releases/download/2.0.0/AssetRipper_win_x64.zip",
+                               "9a7ef0e7c5c3ea5b90b4e6d855e2d98d5f7ec8c3f9e26fccbc194c6a7b01baf7", "AssetRipper 2.0.0"};
+const Download kShaders = {"builtin_shaders-5.6.7f1.zip",
+                           "https://download.unity3d.com/download_unity/e80cc3114ac1/builtin_shaders-5.6.7f1.zip",
+                           "082ca6e84a5f079101e12e4158b4ea8fbeeb992a966d6cb88493bee86518abd6", "Unity's shaders"};
+const Download kUnity = {
+    "UnitySetup64-5.6.7f1.exe",
+    "https://download.unity3d.com/download_unity/e80cc3114ac1/Windows64EditorInstaller/UnitySetup64-5.6.7f1.exe",
+    "918fcd42a2c8eb7984972508e1d8dab693f9e7721cae7642ec60aa4e99c72d12", "Unity 5.6.7f1 (about 570 MB)"};
+
+// AVP_CONVERTER overrides the folder.
+fs::path ConverterDir() {
+  wchar_t buf[MAX_PATH] = L"";
+  if (GetEnvironmentVariableW(L"AVP_CONVERTER", buf, MAX_PATH) > 0) return fs::path(buf);
+  return ExeDir() / "converter";
+}
+
+std::string Sha256(const fs::path& file) {
+  FILE* f = trg::OpenFile(Utf8(file), "rb");
+  if (!f) return std::string();
+  BCRYPT_ALG_HANDLE alg = nullptr;
+  BCRYPT_HASH_HANDLE hash = nullptr;
+  std::string hex;
+  if (BCryptOpenAlgorithmProvider(&alg, BCRYPT_SHA256_ALGORITHM, nullptr, 0) == 0 &&
+      BCryptCreateHash(alg, &hash, nullptr, 0, nullptr, 0, 0) == 0) {
+    std::vector<unsigned char> buf(1 << 20);
+    size_t n;
+    while ((n = fread(buf.data(), 1, buf.size(), f)) > 0) BCryptHashData(hash, buf.data(), (ULONG)n, 0);
+    unsigned char digest[32];
+    if (BCryptFinishHash(hash, digest, sizeof digest, 0) == 0) {
+      static const char* kHex = "0123456789abcdef";
+      for (unsigned char b : digest) {
+        hex += kHex[b >> 4];
+        hex += kHex[b & 15];
+      }
+    }
+  }
+  if (hash) BCryptDestroyHash(hash);
+  if (alg) BCryptCloseAlgorithmProvider(alg, 0);
+  fclose(f);
+  return hex;
+}
+
+// Downloads one file into converter\tools\downloads, or keeps the copy already there if its hash is right.
+std::string Fetch(trg::Task& task, const Download& d, fs::path* out) {
+  const fs::path dir = ConverterDir() / "tools" / "downloads";
+  std::error_code ec;
+  fs::create_directories(dir, ec);
+  *out = dir / d.file;
+  if (fs::exists(*out, ec) && Sha256(*out) == d.sha256) return std::string();
+  task.SetLabel(std::string("Downloading ") + d.what);
+  const std::string err = trg::DownloadFile(task, d.url, Utf8(*out));
+  if (task.cancelled()) return "Cancelled.";
+  if (!err.empty()) return std::string("Could not download ") + d.what + ": " + err;
+  task.SetLabel(std::string("Checking ") + d.what);
+  if (Sha256(*out) != d.sha256) {
+    fs::remove(*out, ec);
+    return std::string("The download of ") + d.what + " wasn't the expected file. Try again later.";
+  }
+  return std::string();
+}
+
+// Runs a program with no window and waits. Each line it prints goes to `line`. Cancel stops it and everything it
+// started: a job object holds the whole process tree.
+int RunHidden(trg::Task* task, const std::wstring& exe, std::wstring cmd, const fs::path& cwd,
+              const std::function<void(const std::string&)>& line) {
+  SECURITY_ATTRIBUTES sa{sizeof(sa), nullptr, TRUE};
+  HANDLE read = nullptr, write = nullptr;
+  if (!CreatePipe(&read, &write, &sa, 0)) return -1;
+  SetHandleInformation(read, HANDLE_FLAG_INHERIT, 0);
+  STARTUPINFOW si{};
+  si.cb = sizeof(si);
+  si.dwFlags = STARTF_USESTDHANDLES;
+  si.hStdOutput = write;
+  si.hStdError = write;
+  si.hStdInput = GetStdHandle(STD_INPUT_HANDLE);
+  PROCESS_INFORMATION pi{};
+  HANDLE job = CreateJobObjectW(nullptr, nullptr);
+  JOBOBJECT_EXTENDED_LIMIT_INFORMATION limit{};
+  limit.BasicLimitInformation.LimitFlags = JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;
+  SetInformationJobObject(job, JobObjectExtendedLimitInformation, &limit, sizeof limit);
+  const BOOL ok = CreateProcessW(exe.c_str(), cmd.data(), nullptr, nullptr, TRUE, CREATE_NO_WINDOW | CREATE_SUSPENDED,
+                                 nullptr, cwd.empty() ? nullptr : cwd.c_str(), &si, &pi);
+  CloseHandle(write);
+  if (!ok) {
+    CloseHandle(read);
+    CloseHandle(job);
+    return -1;
+  }
+  AssignProcessToJobObject(job, pi.hProcess);
+  ResumeThread(pi.hThread);
+  std::string pending;
+  char buf[4096];
+  bool killed = false;
+  for (;;) {
+    if (task && task->cancelled() && !killed) {
+      TerminateJobObject(job, 1);
+      killed = true;
+    }
+    DWORD avail = 0;
+    if (!PeekNamedPipe(read, nullptr, 0, nullptr, &avail, nullptr)) break;  // every writer has closed the pipe
+    if (avail == 0) {
+      // A program it started may still hold the pipe after it has ended.
+      if (WaitForSingleObject(pi.hProcess, 50) == WAIT_OBJECT_0 &&
+          (!PeekNamedPipe(read, nullptr, 0, nullptr, &avail, nullptr) || avail == 0))
+        break;
+      continue;
+    }
+    DWORD n = 0;
+    if (!ReadFile(read, buf, sizeof buf, &n, nullptr) || n == 0) break;
+    pending.append(buf, n);
+    size_t at;
+    while ((at = pending.find('\n')) != std::string::npos) {
+      std::string l = pending.substr(0, at);
+      if (!l.empty() && l.back() == '\r') l.pop_back();
+      if (line) line(l);
+      pending.erase(0, at + 1);
+    }
+  }
+  if (!pending.empty() && line) line(pending);
+  WaitForSingleObject(pi.hProcess, INFINITE);
+  DWORD code = 1;
+  GetExitCodeProcess(pi.hProcess, &code);
+  CloseHandle(pi.hThread);
+  CloseHandle(pi.hProcess);
+  CloseHandle(read);
+  CloseHandle(job);
+  return killed ? -2 : (int)code;
+}
+
+std::string Unpack(trg::Task& task, const fs::path& zip, const fs::path& into) {
+  std::error_code ec;
+  fs::create_directories(into, ec);
+  wchar_t sys[MAX_PATH] = L"";
+  GetSystemDirectoryW(sys, MAX_PATH);
+  const std::wstring tar = std::wstring(sys) + L"\\tar.exe";
+  const int code = RunHidden(&task, tar, L"\"" + tar + L"\" -xf \"" + zip.wstring() + L"\" -C \"" + into.wstring() + L"\"",
+                             fs::path(), nullptr);
+  return code == 0 ? std::string() : "Could not unpack " + Utf8(zip.filename());
+}
+
+// Python with the two packages the converter uses. The embeddable Python only looks where its ._pth file says, so
+// Lib\site-packages is added there.
+std::string SetUpPython(trg::Task& task, const fs::path& dir) {
+  std::error_code ec;
+  if (fs::exists(dir / "python.exe", ec) && fs::exists(dir / "Lib" / "site-packages" / "PIL", ec) &&
+      fs::exists(dir / "Lib" / "site-packages" / "texture2ddecoder", ec))
+    return std::string();
+  fs::path zip, pillow, decoder;
+  std::string err = Fetch(task, kPython, &zip);
+  if (err.empty()) err = Fetch(task, kPillow, &pillow);
+  if (err.empty()) err = Fetch(task, kDecoder, &decoder);
+  if (!err.empty()) return err;
+  task.SetLabel("Setting up Python");
+  err = Unpack(task, zip, dir);
+  if (err.empty()) err = Unpack(task, pillow, dir / "Lib" / "site-packages");
+  if (err.empty()) err = Unpack(task, decoder, dir / "Lib" / "site-packages");
+  if (!err.empty()) return err;
+  FILE* f = trg::OpenFile(Utf8(dir / "python312._pth"), "wb");
+  if (!f) return "Could not set up Python in " + Utf8(dir);
+  fputs("python312.zip\n.\nLib\\site-packages\n", f);
+  fclose(f);
+  return std::string();
+}
+
+std::string SetUpZip(trg::Task& task, const Download& d, const fs::path& dir, const char* marker) {
+  std::error_code ec;
+  if (fs::exists(dir / marker, ec)) return std::string();
+  fs::path zip;
+  const std::string err = Fetch(task, d, &zip);
+  if (!err.empty()) return err;
+  task.SetLabel(std::string("Unpacking ") + d.what);
+  return Unpack(task, zip, dir);
+}
+
+// Unity 5.6.7f1: one already installed in the usual places, else its installer, run silently into converter\tools.
+// The installer asks Windows for permission.
+std::string FindOrInstallUnity(trg::Task& task, const fs::path& tools, fs::path* unity) {
+  std::error_code ec;
+  std::vector<fs::path> places = {tools / "Unity567" / "Editor" / "Unity.exe"};
+  wchar_t pf[MAX_PATH] = L"";
+  if (GetEnvironmentVariableW(L"ProgramFiles", pf, MAX_PATH) > 0) {
+    places.push_back(fs::path(pf) / "Unity 5.6.7f1" / "Editor" / "Unity.exe");
+    places.push_back(fs::path(pf) / "Unity" / "Hub" / "Editor" / "5.6.7f1" / "Editor" / "Unity.exe");
+  }
+  for (const fs::path& p : places)
+    if (fs::exists(p, ec)) {
+      *unity = p;
+      return std::string();
+    }
+  fs::path setup;
+  const std::string err = Fetch(task, kUnity, &setup);
+  if (!err.empty()) return err;
+  task.SetLabel("Installing Unity 5.6.7f1: allow it when Windows asks");
+  task.Progress(0, -1);
+  const std::wstring args = L"/S /D=" + (tools / "Unity567").wstring();
+  SHELLEXECUTEINFOW sei{};
+  sei.cbSize = sizeof(sei);
+  sei.fMask = SEE_MASK_NOCLOSEPROCESS;
+  sei.lpVerb = L"runas";
+  sei.lpFile = setup.c_str();
+  sei.lpParameters = args.c_str();
+  sei.nShow = SW_HIDE;
+  if (!ShellExecuteExW(&sei) || !sei.hProcess)
+    return "Unity 5.6.7f1 wasn't installed: Windows didn't allow its installer to run. Choose Install again and "
+           "allow it.";
+  WaitForSingleObject(sei.hProcess, INFINITE);
+  CloseHandle(sei.hProcess);
+  if (!fs::exists(places[0], ec))
+    return "Unity 5.6.7f1's installer finished, but Unity wasn't found in " + Utf8(tools / "Unity567") + ".";
+  *unity = places[0];
+  return std::string();
+}
+
+// Unity only builds once it has a licence, and a free Personal one needs a Unity account. Without one, Unity is
+// opened for the player to sign in.
+std::string CheckUnityLicence(const fs::path& unity) {
+  wchar_t pd[MAX_PATH] = L"";
+  GetEnvironmentVariableW(L"ProgramData", pd, MAX_PATH);
+  std::error_code ec;
+  if (fs::exists(fs::path(pd) / "Unity" / "Unity_v5.x.ulf", ec)) return std::string();
+  ShellExecuteW(nullptr, L"open", unity.c_str(), nullptr, unity.parent_path().c_str(), SW_SHOWNORMAL);
+  return "Unity needs a licence before it can build the game. Unity is opening: sign in with a free Unity account, "
+         "choose Unity Personal, then close Unity and choose Install again.";
+}
+
+// What each of the converter's stages is called on screen, and about how long it takes, for the progress bar.
+struct Stage {
+  const char* name;
+  const char* label;
+  int seconds;
+};
+const Stage kStages[] = {
+    {"merge", "Unpacking your copy of the game", 10},
+    {"export", "Exporting the game with AssetRipper", 100},
+    {"aperture", "Exporting the cutscenes", 100},
+    {"patch", "Applying the PC port's changes", 2},
+    {"rewired", "Applying the PC port's changes", 1},
+    {"cleanup", "Applying the PC port's changes", 1},
+    {"plugins", "Applying the PC port's changes", 1},
+    {"shaders", "Adding the shaders", 2},
+    {"clips", "Restoring the animations", 1},
+    {"textures", "Converting the textures", 5},
+    {"port", "Adding the PC port", 2},
+    {"unity", "Building the game with Unity: the long part, about 25 minutes", 1500},
+    {"art", "Making the launcher's pictures", 1},
+};
+
+std::string InstallFromApk(trg::Task& task, const trg::hub::ApkInstall& in) {
+  const fs::path dest = fs::u8path(in.dest);
+  wchar_t buf[MAX_PATH] = L"";
+  if (GetEnvironmentVariableW(L"AVP_PAYLOAD", buf, MAX_PATH) > 0) return CopyPayload(task, fs::path(buf), dest);
+
+  const fs::path conv = ConverterDir();
+  const fs::path tools = conv / "tools";
+  std::error_code ec;
+  if (!fs::exists(conv / "convert.py", ec) || !fs::exists(conv / "pack" / "port", ec))
+    return "The converter wasn't found beside the launcher (the converter folder). Download the launcher again.";
+
+  // The work folder holds the exported project, about 7.5 GB, and goes once the game is built. Unity needs about
+  // 2 GB more the first time, and the game 1.5 GB.
+  const fs::path work = dest.parent_path() / "avp_evolution_build";
+  ULARGE_INTEGER free_bytes{};
+  if (!fs::exists(work, ec) && GetDiskFreeSpaceExW(dest.parent_path().c_str(), &free_bytes, nullptr, nullptr) &&
+      free_bytes.QuadPart < 12ull * 1024 * 1024 * 1024)
+    return "Building the game needs about 12 GB of free space on this drive while it runs, and 1.5 GB once it's "
+           "done. Free some space, then try again.";
+
+  std::string err = SetUpPython(task, tools / "python");
+  if (err.empty()) err = SetUpZip(task, kAssetRipper, tools / "AssetRipper", "AssetRipper.GUI.Free.exe");
+  if (err.empty()) err = SetUpZip(task, kShaders, tools / "builtin_shaders", "CGIncludes");
+  fs::path unity;
+  if (err.empty()) err = FindOrInstallUnity(task, tools, &unity);
+  if (err.empty()) err = CheckUnityLicence(unity);
+  if (!err.empty()) return err;
+  if (task.cancelled()) return "Cancelled.";
+
+  fs::create_directories(work, ec);
+  FILE* log = trg::OpenFile(Utf8(work / "convert.log"), "ab");
+  long long total = 0;
+  for (const Stage& s : kStages) total += s.seconds * 1000LL;
+  std::atomic<long long> before{0};  // the expected milliseconds of the stages already done
+  std::atomic<int> expected{0};
+  std::atomic<DWORD> started{GetTickCount()};
+  std::atomic<bool> running{true};
+  std::string last;
+  task.SetLabel("Starting the converter");
+  task.Progress(0, total);
+  const fs::path python = tools / "python" / "python.exe";
+  std::wstring cmd = L"\"" + python.wstring() + L"\" -u \"" + (conv / "convert.py").wstring() + L"\" --apk \"" +
+                     Wide(in.apk) + L"\" --obb \"" + Wide(in.obb) + L"\" --work \"" + work.wstring() + L"\" --out \"" +
+                     dest.wstring() + L"\" --tools \"" + tools.wstring() + L"\" --unity \"" + unity.wstring() + L"\"";
+  SetEnvironmentVariableW(L"PYTHONIOENCODING", L"utf-8");
+  // Unity prints nothing for 25 minutes, so the bar moves with the time each stage usually takes.
+  std::thread ticker([&] {
+    while (running) {
+      const long long in_stage = std::min<long long>(GetTickCount() - started, expected * 950LL);
+      task.Progress(before + in_stage, total);
+      Sleep(500);
+    }
+  });
+  const int code = RunHidden(&task, python.wstring(), cmd, conv, [&](const std::string& l) {
+    if (log) {
+      fprintf(log, "%s\n", l.c_str());
+      fflush(log);
+    }
+    if (l.rfind("STAGE ", 0) == 0) {
+      const std::string name = l.substr(6);
+      before += expected * 1000LL;
+      int next = 0;
+      for (const Stage& s : kStages)
+        if (name == s.name) {
+          task.SetLabel(s.label);
+          next = s.seconds;
+        }
+      expected = next;
+      started = GetTickCount();
+    } else if (!l.empty()) {
+      last = l;
+    }
+  });
+  running = false;
+  ticker.join();
+  if (log) fclose(log);
+  if (code == -2 || task.cancelled()) return "Cancelled. What's done is kept: choose Install again to carry on.";
+  if (code != 0)
+    return "The game couldn't be built: " + (last.empty() ? std::string("the converter didn't start") : last) +
+           ". The details are in " + Utf8(work / "convert.log") + ".";
+  task.SetLabel("Removing the work files");
+  task.Progress(0, -1);
+  fs::remove_all(work, ec);
   return std::string();
 }
 

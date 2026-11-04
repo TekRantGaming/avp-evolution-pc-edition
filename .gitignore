@@ -16,6 +16,7 @@ build/
 /playstore/
 payload/
 launcher/payload_extra/
+release/
 
 # Third party binaries and SDKs: see BUILDING.md
 *.dll

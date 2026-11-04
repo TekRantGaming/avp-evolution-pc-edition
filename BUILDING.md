@@ -89,19 +89,35 @@ No windows open, and it prints each stage as it goes:
 | `textures` | Moves textures off Android-only formats and decodes the ETC ones |
 | `port` | Copies in the pack from step 3 |
 | `unity` | Upgrades the project, un-batches every level and builds the game |
+| `art` | Cuts the launcher's pictures for the game from its menu background and logo |
 
 AssetRipper gives files new IDs on every export, so every step finds things by name. To repeat a stage, pass `--stages`, for example `--stages unity`. The `unity` stage only un-batches the first time, because un-batching only works on freshly exported scenes. If a stage stops, its message says where to look: `unity.log` and the AssetRipper logs are in the work folder.
 
 > [!CAUTION]
 > The work folder and the game folder hold the game's assets. **Never share them, or attach them to an issue.**
 
-## 5. Build the launcher
+## 5. Build the launcher and the release
 
 ```bash
 launcher/avp_launcher/build.bat
 ```
 
-The launcher doesn't run the converter yet: for now, its install copies a built game from `payload` beside it, which `make_payload.ps1` makes from a game folder. The launcher's game art isn't included here: put your own `grid.png`, `hero.png` and `logo.png` in `launcher/payload_extra/launcher_art`, and create that folder if it's missing.
+Then make the release zip, which goes in `release/`:
+
+```powershell
+powershell -File launcher/avp_launcher/make_release.ps1
+```
+
+The zip holds the launcher, the converter, the pack from step 3, and the DLSS and XeSS runtimes with every third-party licence. It holds no game files, and the script stops if it finds any. When a player chooses Install, the launcher:
+
+1. Checks their `.apk` and `.obb`, and that there are about 12 GB free.
+2. Downloads what the converter needs into `converter/tools`, each file checked against its SHA-256: Python 3.12 with Pillow and texture2ddecoder, AssetRipper 2.0.0 and Unity's built-in shaders.
+3. Uses Unity 5.6.7f1 if it's already installed. Otherwise it downloads Unity's installer (about 570 MB) and runs it silently, and Windows asks the player for permission.
+4. If Unity has no licence yet, opens Unity for the player to sign in with a free account, and asks them to choose Install again.
+5. Runs the converter with no windows, showing each stage. Cancel stops it, and Install carries on where it stopped.
+6. Removes the work files once the game is built. The launcher's pictures for the game are cut from the player's own copy, by the converter's `art` stage.
+
+For development, set `AVP_PAYLOAD` to a built game folder and the install copies it instead of building one.
 
 ## Working on the port
 

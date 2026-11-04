@@ -90,6 +90,7 @@ The port uses the [TRG Launcher](https://github.com/TekRantGaming/trg-launcher) 
 - Point the launcher at your `.apk` and `.obb`
 - A card shows **exactly which files work**: version, size and hashes
 - It checks the package really is AVP Evolution before it does anything
+- It then **builds the game on your PC** from those files: it downloads the free tools it needs (AssetRipper, Python and Unity 5.6.7), and Unity asks you to sign in with a free account the first time. It takes about half an hour and 12 GB of free space while it runs
 
 ### Display and Graphics
 - **Fullscreen** or **windowed**, resolution and **V-Sync**
