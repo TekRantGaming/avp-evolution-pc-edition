@@ -200,6 +200,15 @@ The project is `AVPE_Play/ExportedProject`, a local git repo with one commit per
 - **Code:** `launcher/trg-launcher` (branch `avp-evolution`, local) adds Android APK installs (`InstallSource::kApk`), project settings sections and `local:` art. `launcher/avp_launcher` is this game's project.
 - **Payload:** `make_payload.ps1` puts `Build/PlayStore` and the art beside the launcher as `payload/`. Install checks the player's APK package name and OBB, then copies the payload into `games/avp_evolution`.
 
+## The converter (2026-10-30 to 2026-11-04)
+A payload holds the game's assets, so it can't be shared. `converter/convert.py` makes the same game on the player's PC from their own APK and OBB, running AssetRipper and Unity 5.6.7 with no windows.
+- **Everything by name:** AssetRipper gives files new random GUIDs on every export, so no step stores an ID.
+- **No game text in the patches:** `patches.json` finds each line by a hash, carries only the lines the port adds, and stores only the changed characters of an edited line. Each file's hash is checked before and after, so a different copy of the game fails loudly. `dev/make_patches.py` writes it from the project's git history.
+- **Not everything is a script:** the Rewired prefab's gamepad changes are a stage of their own (`rewired`), found by action and element, because the prefab holds GUIDs that change on each export. Detonator's spray helper is taken from the player's Decompiled export rather than shipped.
+- **Clip names come from the export itself:** before Unity imports a clip, the name inside it is still the true one. Renaming from that, before the import, needs no list of the game's names. An earlier version renamed after the import and restored nothing, silently, so the stage now stops if it restores nothing.
+- **Shaders written for the port:** 45 shaders are written from each one's name, its properties and how the game's scripts call it, `family_shaders.py` generates the 104 interface and ShaderWizard shaders, and Unity's 33 come from its public source. Headers always come from the player's export. The first tone map made everything far too dark: the game never sets `_Exposure`, and the curve it uses turned out to be `pow(colour, _Gamma)`, measured with `dev/tone_probe_orig.ps1`.
+- **Result:** a clean run takes 15 to 30 minutes (31 on 2026-11-04, nearly all of it Unity's build) and 7.4 GB of work space, and gives the same 198 files as the hand build at 1.5 GB. Brightness in the levels compared is within a point or two of the hand build. The small yellow hangar lamps in Predator_L6 still come out whitish.
+
 ## Status (2026-10-30)
 - **Build:** clean, all 43 scenes.
 - **Tour:** all 19 campaign levels, 13 side missions and the bonus level start and render their environments, checked with `tour.ps1` and the console. It covers each level's opening area only, with default settings.
@@ -210,4 +219,5 @@ The project is `AVPE_Play/ExportedProject`, a local git repo with one commit per
 - **Still to do:**
   - The white Predator skins glow in brightly lit arenas.
   - DualSense and other non-XInput pads Rewired doesn't know are untested.
-  - The payload ships the game's assets; the bring-your-own-APK converter is future work.
+  - The launcher still installs from a payload; it should run the converter instead, with its progress.
+  - Converter builds: the hangar lamps' colour, and the cloak, thermal vision, shields and other effects haven't been checked on screen.

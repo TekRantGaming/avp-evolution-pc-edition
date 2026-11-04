@@ -1,0 +1,1051 @@
+{
+"files": {
+"Plugins/Assembly-CSharp-firstpass/AGSSocialLocalUser.cs": {
+"sha1": "43dc6580e6fabfdbc18b68f4dbef493eb685a53d",
+"result_sha1": "71b17b6805637cc8fcae4f5f17ad12d1a4c2c2da",
+"hunks": [
+{
+"at": 36,
+"removed": [],
+"added": [
+"\t// PC port: Unity 5.6 added this ILocalUser overload.",
+"\tpublic void Authenticate(Action<bool, string> callback)",
+"\t{",
+"\t\tAuthenticate(delegate(bool ok)",
+"\t\t{",
+"\t\t\tif (callback != null) callback(ok, null);",
+"\t\t});",
+"\t}",
+""
+]
+}
+]
+},
+"Plugins/Assembly-CSharp-firstpass/Consts.cs": {
+"sha1": "96dd063fe29ebdd794e88e03c015542f496778d8",
+"result_sha1": "9efbff490524200d682feed3af1bfb9e99d5b78b",
+"hunks": [
+{
+"at": 306,
+"line": "6f3b1e96e8bc",
+"keep": [
+10,
+0
+],
+"text": "Application.platform == RuntimePlatform.Android; // PC port"
+},
+{
+"at": 314,
+"line": "6f3b1e96e8bc",
+"keep": [
+10,
+0
+],
+"text": "Application.platform == RuntimePlatform.Android; // PC port"
+}
+]
+},
+"Plugins/Assembly-CSharp-firstpass/Everyplay.cs": {
+"sha1": "41f4e9ff0865525a234e03888679062a55fec971",
+"result_sha1": "3e01a4fe239193455a7484650e66d06106f8f792",
+"hunks": [
+{
+"at": 100,
+"removed": [],
+"added": [
+"\t\t\tif (Application.platform != RuntimePlatform.Android && Application.platform != RuntimePlatform.IPhonePlayer)",
+"\t\t\t{",
+"\t\t\t\treturn null; // PC port: Everyplay video recording is a mobile-only SDK",
+"\t\t\t}"
+]
+}
+]
+},
+"Plugins/Assembly-CSharp-firstpass/GameCircleSocial.cs": {
+"sha1": "284570bf81e23ddf8eae6da2a2e862c341488fc4",
+"result_sha1": "9912109f60cfbe13c709852cc223df67f2570330",
+"hunks": [
+{
+"at": 123,
+"removed": [],
+"added": [
+"\t}",
+"",
+"\t// PC port: Unity 5.6 added this ISocialPlatform overload.",
+"\tpublic void Authenticate(ILocalUser user, Action<bool, string> callback)",
+"\t{",
+"\t\tAuthenticate(user, delegate(bool ok)",
+"\t\t{",
+"\t\t\tif (callback != null) callback(ok, null);",
+"\t\t});"
+]
+}
+]
+},
+"Plugins/Assembly-CSharp-firstpass/Prime31/GPGManager.cs": {
+"sha1": "3d32d7196d7e00ba1e793bc79febd255fedb047d",
+"result_sha1": "477f3e839b2ff3fd6ce362ba4919df2a2dd9d99f",
+"hunks": [
+{
+"at": 76,
+"removed": [],
+"added": [
+"#if UNITY_ANDROID // PC port: Prime31 store managers are Android-only"
+]
+},
+{
+"at": 77,
+"removed": [],
+"added": [
+"#endif"
+]
+}
+]
+},
+"Plugins/Assembly-CSharp-firstpass/Prime31/GPGMultiplayerManager.cs": {
+"sha1": "85e89c89db2c24e37ffbe49ecc94df201e655df6",
+"result_sha1": "fafe87c5b5965d05d0c5bd8bb3eae8b50d8c64da",
+"hunks": [
+{
+"at": 67,
+"removed": [],
+"added": [
+"#if UNITY_ANDROID // PC port: Prime31 store managers are Android-only"
+]
+},
+{
+"at": 68,
+"removed": [],
+"added": [
+"#endif"
+]
+}
+]
+},
+"Plugins/Assembly-CSharp-firstpass/Prime31/GPGTurnBasedManager.cs": {
+"sha1": "cae97040ea6dff785fa1ca3c7aa04fa0f74d2a2b",
+"result_sha1": "a0d324c1851fcb7ec5752b26ea4a1a0536a4a348",
+"hunks": [
+{
+"at": 35,
+"removed": [],
+"added": [
+"#if UNITY_ANDROID // PC port: Prime31 store managers are Android-only"
+]
+},
+{
+"at": 36,
+"removed": [],
+"added": [
+"#endif"
+]
+}
+]
+},
+"Plugins/Assembly-CSharp-firstpass/Prime31/GoogleIABManager.cs": {
+"sha1": "7f6dc762abe5c58ef4dcaaaef39b0f9b1e4b3b58",
+"result_sha1": "c2d31af8e8d9bafd6ed0ffd78a7303a331822870",
+"hunks": [
+{
+"at": 27,
+"removed": [],
+"added": [
+"#if UNITY_ANDROID // PC port: Prime31 store managers are Android-only"
+]
+},
+{
+"at": 28,
+"removed": [],
+"added": [
+"#endif"
+]
+}
+]
+},
+"Plugins/Assembly-UnityScript-firstpass/DepthOfFieldScatter.cs": {
+"sha1": "0f5ad1f2259df3225f924a60303b621c5a932ceb",
+"result_sha1": "95d0f6f483c092992524d5e3c6199e3b4e40446f",
+"hunks": [
+{
+"at": 144,
+"line": "181f0593acb9",
+"keep": [
+59,
+2
+],
+"text": "IndirectArguments"
+}
+]
+},
+"Scripts/Assembly-CSharp/ActionPushTip.cs": {
+"sha1": "8aabd87924d78243b848c3878d367e51e4246cb5",
+"result_sha1": "3e9a335f2d02e1d12fce967f2467e19f93e94924",
+"hunks": [
+{
+"at": 115,
+"removed": [],
+"added": [
+"\t\t\tif (Application.platform != RuntimePlatform.Android)",
+"\t\t\t{",
+"\t\t\t\treturn PCStrings.Symbols(msg); // PC port",
+"\t\t\t}"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/AlienStrafe.cs": {
+"sha1": "94a37e6e24135a20536b1b3bc13d2d33f244a640",
+"result_sha1": "61b7c5851bcc0b89484f7c3df5c2e790487e4ede",
+"hunks": [
+{
+"at": 1,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/AlienWallController.cs": {
+"sha1": "946dcffc7e3f08331a7310128a985ba2cd22cbce",
+"result_sha1": "811548731598dce2733e3d266c084bae1d009e66",
+"hunks": [
+{
+"at": 2,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/BasicAI.cs": {
+"sha1": "514874a79003bbf2f469b46eb075380aa610811d",
+"result_sha1": "0b2f21127fbc8432b517486fe48f8a31f1e12a40",
+"hunks": [
+{
+"at": 3,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/ByteReader.cs": {
+"sha1": "303c849f213498b50dbe135fc1d6c1d3a7925490",
+"result_sha1": "3ef2adb2f14c2d2c3e05c0dc932cda1068dba249",
+"hunks": [
+{
+"at": 44,
+"line": "c86155e4e2c9",
+"keep": [
+11,
+0
+],
+"text": " = 0; // PC port: mcs definite-assignment"
+}
+]
+},
+"Scripts/Assembly-CSharp/ConditionalCompile.cs": {
+"sha1": "a598eb5df01f8f4510884a08992c1a787194807f",
+"result_sha1": "2ed38fedbef00916bfcaf9543c4ede607dd5d1a3",
+"hunks": [
+{
+"at": 183,
+"line": "3fa97fd8f89f",
+"keep": [
+10,
+0
+],
+"text": "Application.platform != RuntimePlatform.Android; // PC port: the 1024 character and weapon textures"
+},
+{
+"at": 199,
+"removed": [
+"1f79ddd188c2"
+],
+"added": [
+"\t\t\t// PC port: High-end effects were reserved for Tegra 4 tablets; any desktop GPU qualifies.",
+"\t\t\treturn Application.platform != RuntimePlatform.Android || _Tegra4Device;"
+]
+},
+{
+"at": 265,
+"removed": [],
+"added": [
+"\t\tif (Application.platform != RuntimePlatform.Android)",
+"\t\t{",
+"\t\t\treturn; // PC port: PCSettings sets the resolution; this halved it on screens over 2000 pixels wide",
+"\t\t}"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/DeltaDNA/Messaging/ShimLayer.cs": {
+"sha1": "9fd2445921a762e71b6cf8ba41701410dc2e269e",
+"result_sha1": "70b1ae0b5d53494f39bf193a87cd4a9ce76c161f",
+"hunks": [
+{
+"at": 24,
+"line": "e62e70344d52",
+"keep": [
+12,
+0
+],
+"text": " = -1; // PC port: decompiler artifact (unmatched string switch)"
+}
+]
+},
+"Scripts/Assembly-CSharp/Facebook/Unity/EditorRuntime/Dialogs/MockLoginDialog.cs": {
+"sha1": "23406e1af09e540cb83c9624f1091f40307f819a",
+"result_sha1": "0ec82638fa35b83b1a97f0967ddd4aacd9f9f7bf",
+"hunks": [
+{
+"at": 71,
+"line": "9c8eb0dc3483",
+"keep": [
+19,
+101
+],
+"text": "t"
+},
+{
+"at": 72,
+"line": "02a14cd3c045",
+"keep": [
+95,
+15
+],
+"text": "t"
+}
+]
+},
+"Scripts/Assembly-CSharp/FollowFixPoint.cs": {
+"sha1": "215840b2d87ad46fe137dc56720c960fe9d627ec",
+"result_sha1": "843b69f70652464897b539ddeb6245d82d71605a",
+"hunks": [
+{
+"at": 2,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/GunnerStaticAttack.cs": {
+"sha1": "846bd393f79dff5705d624527450df6fb20d13da",
+"result_sha1": "b9b0483bd3414d19fe46575a4676eb161b46b36e",
+"hunks": [
+{
+"at": 2,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/HumanModel.cs": {
+"sha1": "ee32744e301285377fb79894cd786b6716e64377",
+"result_sha1": "6e50eeb41d5ad8a533f264d27e269e5b14465c1c",
+"hunks": [
+{
+"at": 610,
+"removed": [],
+"added": [
+"\t\t// PC port: rumble",
+"\t\tif (this is PlayerModel)",
+"\t\t{",
+"\t\t\tif (!base.IsDead && attackInfo.damage > 0f)",
+"\t\t\t{",
+"\t\t\t\tPCPad.RumbleHurt(attackInfo.damage >= damageHeavyLimit);",
+"\t\t\t}",
+"\t\t}",
+"\t\telse if (attackInfo.attacker is PlayerModel && !base.IsDead)",
+"\t\t{",
+"\t\t\tPCPad.RumbleStrike(attackInfo.damage >= damageHeavyLimit);",
+"\t\t}"
+]
+},
+{
+"at": 665,
+"removed": [],
+"added": [
+"\tprivate void RumbleSlice(AttackInfo attackInfo)",
+"\t{",
+"\t\tif (attackInfo.attacker is PlayerModel)",
+"\t\t{",
+"\t\t\tPCPad.RumbleSlice();",
+"\t\t}",
+"\t}",
+""
+]
+},
+{
+"at": 673,
+"removed": [],
+"added": [
+"\t\t\tRumbleSlice(attackInfo); // PC port"
+]
+},
+{
+"at": 679,
+"removed": [],
+"added": [
+"\t\t\tRumbleSlice(attackInfo); // PC port"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/InputController.cs": {
+"sha1": "c1f2833ba2263c3e0158ee6f1769e044b3b1f0eb",
+"result_sha1": "aa3e02f79b32382be16dd30138b1ccb6c4a99014",
+"hunks": [
+{
+"at": 98,
+"removed": [],
+"added": [
+"",
+"\tprivate float mouseLookUntil;"
+]
+},
+{
+"at": 661,
+"removed": [],
+"added": [
+"#if !UNITY_ANDROID",
+"\t\treturn; // PC port: Xperia Play touchpad is Android-only",
+"#else"
+]
+},
+{
+"at": 691,
+"removed": [],
+"added": [
+"#endif"
+]
+},
+{
+"at": 714,
+"removed": [
+"45d651673c36"
+],
+"added": [
+"\t\t\t// PC port: a fixed reference size, or the stick turns at a third of the speed at 4K",
+"\t\t\tbool phone = Application.platform == RuntimePlatform.Android;",
+"\t\t\tsweepInput = new Vector2(zero.x / (phone ? (float)Screen.width : 1280f) * 800f, zero.y / (phone ? (float)Screen.height : 720f) * 480f) * ConditionalCompile.SweepSpeed(swipeSpeed) * (phone ? 1f : PCSettings.GetFloat(\"tune_stick_turn\", 2f));"
+]
+},
+{
+"at": 725,
+"removed": [
+"c2b7df6201fd",
+"16589d94edfc",
+"60ba4b2daa4e",
+"e01854df8121",
+"60ba4b2daa4e",
+"bc7820b36bcc",
+"c2b7df6201fd",
+"eb5baf788677"
+],
+"added": []
+},
+{
+"at": 1035,
+"removed": [],
+"added": [
+"\t\t\tPCPad.RumbleSlice(); // PC port"
+]
+},
+{
+"at": 1166,
+"removed": [],
+"added": [
+"\t\t\t// PC port: moved here from ReadJoystickInput, which runs in FixedUpdate and missed most presses above 50 fps",
+"\t\t\tif (RewiredInputWrapper.Instance.GetButtonDown(RewiredAction.ShowPath) && onTap != null)",
+"\t\t\t{",
+"\t\t\t\tonTap();",
+"\t\t\t}"
+]
+},
+{
+"at": 1168,
+"removed": [],
+"added": [
+"\t\t\t\tVector2 mouseLook = JoystickInputHelper.MouseLook * PCSettings.GetFloat(\"tune_mouse_look\", 0.08f); // PC port: degrees per mouse count",
+"\t\t\t\tif (mouseLook != Vector2.zero)",
+"\t\t\t\t{",
+"\t\t\t\t\tcameraController.SetYWhenSweep(cameraController.GetY() + (GameplayController.Instance.invertY ? mouseLook.y : (0f - mouseLook.y)));",
+"\t\t\t\t\tcameraController.SetXWhenSweep(cameraController.GetX() + mouseLook.x);",
+"\t\t\t\t\tmouseLookUntil = Time.unscaledTime + 0.25f;",
+"\t\t\t\t}",
+"\t\t\t\tif (Time.unscaledTime < mouseLookUntil)",
+"\t\t\t\t{",
+"\t\t\t\t\tcameraSwiping = true;",
+"\t\t\t\t}"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/Interpolate.cs": {
+"sha1": "8ae4319c3bd8176239301cd9cac85fd9cc8fbe63",
+"result_sha1": "1d14009436c12d70497ef2bd70d14fad3616e69d",
+"hunks": [
+{
+"at": 88,
+"line": "5cccb86dbd33",
+"keep": [
+10,
+0
+],
+"text": "((IEnumerable<float>)this).GetEnumerator(); // PC port: decompiler artifact"
+},
+{
+"at": 186,
+"line": "5cccb86dbd33",
+"keep": [
+10,
+0
+],
+"text": "((IEnumerable<float>)this).GetEnumerator(); // PC port: decompiler artifact"
+}
+]
+},
+"Scripts/Assembly-CSharp/JoystickInputHelper.cs": {
+"sha1": "96c3ea75bd359b76ba380bdc542cea515d0af66f",
+"result_sha1": "eafcb9abde8d780f044ecf7600b24262e77834a1",
+"hunks": [
+{
+"at": 23,
+"removed": [
+"9200836376b5"
+],
+"added": [
+"\tprivate static bool? isXperiaPlay;",
+"",
+"\t// PC port: was a static field initializer; Unity 5 forbids SystemInfo calls during MonoBehaviour construction.",
+"\tpublic static bool IsXperiaPlay",
+"\t{",
+"\t\tget",
+"\t\t{",
+"\t\t\tif (!isXperiaPlay.HasValue)",
+"\t\t\t{",
+"\t\t\t\tisXperiaPlay = (SystemInfo.deviceModel.Contains(\"Sony Ericsson\") && SystemInfo.deviceModel.Contains(\"R800\")) || SystemInfo.deviceModel.Contains(\"Z1i\");",
+"\t\t\t}",
+"\t\t\treturn isXperiaPlay.Value;",
+"\t\t}",
+"\t}"
+]
+},
+{
+"at": 187,
+"removed": [],
+"added": [
+"\t\t\t\tif (RewiredInputWrapper.Instance.IsUsingMouseKeyboard())",
+"\t\t\t\t{",
+"\t\t\t\t\treturn Vector2.zero; // PC port: see MouseLook",
+"\t\t\t\t}"
+]
+},
+{
+"at": 211,
+"removed": [
+"aac60403e357"
+],
+"added": [
+"\t\t\treturn PCSettings.ScaleLook(zero, RewiredInputWrapper.Instance.IsUsingMouseKeyboard()); // PC port: launcher sensitivity, invert",
+"\t\t}",
+"\t}",
+"",
+"\t// PC port: the sweep above is read in FixedUpdate, which misses most of the mouse's movement at high frame rates,",
+"\t// so the mouse turns the camera directly, every frame (InputController.HandleInput).",
+"\tpublic static Vector2 MouseLook",
+"\t{",
+"\t\tget",
+"\t\t{",
+"\t\t\tif (!Application.isFocused || !RewiredInputWrapper.Instance.IsUsingMouseKeyboard())",
+"\t\t\t{",
+"\t\t\t\treturn Vector2.zero;",
+"\t\t\t}",
+"\t\t\treturn PCSettings.ScaleLook(new Vector2(RewiredInputWrapper.Instance.GetAxis(RewiredAction.CameraHorizontal), RewiredInputWrapper.Instance.GetAxis(RewiredAction.CameraVertical)), true);"
+]
+},
+{
+"at": 235,
+"removed": [],
+"added": [
+"\t\tif (Application.platform != RuntimePlatform.Android) { return; } // PC port"
+]
+},
+{
+"at": 268,
+"removed": [],
+"added": [
+"\t\t\treturn;",
+"\t\t}",
+"\t\tif (Application.platform != RuntimePlatform.Android)",
+"\t\t{",
+"\t\t\t// PC port: keyboard, mouse and controllers go through Rewired, so the touch buttons are hidden as on SHIELD.",
+"\t\t\tToogleUI(false);",
+"\t\t\t_intance = null;",
+"\t\t\tUnityEngine.Object.Destroy(this);"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/Localization.cs": {
+"sha1": "d803aa12d5cf005e9911abcd719d218cce9bfc79",
+"result_sha1": "ddf58c00f293a57174fda147291f18ebf22f17da",
+"hunks": [
+{
+"at": 177,
+"line": "463ec7b0ba0a",
+"keep": [
+10,
+0
+],
+"text": "PCStrings.Text(key, mDictionary[key]); // PC port: keyboard/controller wording for touch strings"
+}
+]
+},
+"Scripts/Assembly-CSharp/MainMenuController.cs": {
+"sha1": "cc57f245901184dff16cb2f5b4c7d3326d37354a",
+"result_sha1": "cb572561e400adb3214fa7ef7f0eaccbd8b63ba3",
+"hunks": [
+{
+"at": 2148,
+"removed": [],
+"added": [
+"#if UNITY_ANDROID || UNITY_IOS // PC port: no fullscreen movie player on desktop"
+]
+},
+{
+"at": 2149,
+"removed": [],
+"added": [
+"#endif"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/ObjectiveManager.cs": {
+"sha1": "5fa3518d233a7ffc2f57d0c47d2c1f4fee15a4f3",
+"result_sha1": "10e5141ee8eced9bdfed21cdcd0069c844f3df92",
+"hunks": [
+{
+"at": 2,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/PlasmaGunAttack.cs": {
+"sha1": "4c84c51befaabe62cbc6225ac8768dae883e23ef",
+"result_sha1": "efe62ffcc17e2472c749f05eaf4a2000c4656ab8",
+"hunks": [
+{
+"at": 2,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/PlayerModel.cs": {
+"sha1": "673662bed137fa2eab847b09b5125550bc48c39f",
+"result_sha1": "a70830c6383e0e83d7a0f580de7c23e489baa4f9",
+"hunks": [
+{
+"at": 197,
+"line": "5451730e9f4f",
+"keep": [
+53,
+207
+],
+"text": "(bool)CurrentMeleeWeapon && attackInfo.attacker != null && "
+},
+{
+"at": 233,
+"line": "33243f4213a3",
+"keep": [
+97,
+69
+],
+"text": "(!(bool)CurrentMeleeWeapon || !CurrentMeleeWeapon.InCounterSlowdown)"
+}
+]
+},
+"Scripts/Assembly-CSharp/PulseRifflePanic.cs": {
+"sha1": "f73f21f44a7d83f484bc2ccce3cae785e3a0b3a4",
+"result_sha1": "a2840588bea1ccd1c59b0550954e05f26a05bdc1",
+"hunks": [
+{
+"at": 2,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/PulseRifleAttack.cs": {
+"sha1": "808fa7423939f5a842f0aedc2838a7618cf111b2",
+"result_sha1": "bb3604086e52e1585606b8b1440efde6d55b3d1c",
+"hunks": [
+{
+"at": 3,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/PushNotificationController.cs": {
+"sha1": "f783098e7ced8d584724f51fce2a6bd7bff204b7",
+"result_sha1": "08969847ca84e6a1651ff48748d4393779210fc7",
+"hunks": [
+{
+"at": 166,
+"removed": [],
+"added": [
+"\t\tif (Application.platform != RuntimePlatform.Android) { return; } // PC port: Android notification bridge"
+]
+},
+{
+"at": 172,
+"removed": [],
+"added": [
+"\t\tif (notificationBridge == null) { return; } // PC port"
+]
+},
+{
+"at": 177,
+"removed": [],
+"added": [
+"\t\tif (notificationBridge == null) { return; } // PC port"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/RageMeter.cs": {
+"sha1": "9b17008cdfa960dd65a7c293b09ca2efe600874c",
+"result_sha1": "39b571c79896218f649b03c35468b5bf0bca870c",
+"hunks": [
+{
+"at": 366,
+"removed": [
+"2a5c90ae8fcb"
+],
+"added": [
+"\t\t// PC port: the Queen mission's HUD has no collider or controller button here, which stopped Start part way.",
+"\t\tCollider buttonCollider = buttonActivateRage.GetComponent<Collider>();",
+"\t\tif (buttonCollider != null)",
+"\t\t{",
+"\t\t\tbuttonCollider.enabled = aValue;",
+"\t\t}",
+"\t\tif (buttonActivateRageController == null)",
+"\t\t{",
+"\t\t\treturn;",
+"\t\t}"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/RangeStrafe.cs": {
+"sha1": "b7c2dfbb5c0f7424f1cacad9e59072572d6a5fb8",
+"result_sha1": "2cb976331c54c4ad2169e030b44f9f2f1f19aa17",
+"hunks": [
+{
+"at": 2,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/ResourceMaterialLoader.cs": {
+"sha1": "d4ab5b4a93c1cb0edd9997024691e81fa9cbc862",
+"result_sha1": "1a3b8ef53c6a1d123b766bb04c2ecca0c1257256",
+"hunks": [
+{
+"at": 98,
+"removed": [],
+"added": [
+"\t\t\t\tif (texture == null && Application.platform != RuntimePlatform.Android)",
+"\t\t\t\t{",
+"\t\t\t\t\t// PC port: keep what the material has rather than leave it blank",
+"\t\t\t\t\tDebug.Log(\"ResourceMaterialLoader: no \" + folderName + textureFileName + \" for \" + materialToSet.name);",
+"\t\t\t\t\treturn;",
+"\t\t\t\t}"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/Rewired/UI/ControlMapper/ThemeSettings.cs": {
+"sha1": "c504496f0e98aef28585f8798035e2797f763508",
+"result_sha1": "c82ec061b0d903f7b87fcdb35611169e3e1b4bc5",
+"hunks": [
+{
+"at": 866,
+"line": "e62e70344d52",
+"keep": [
+12,
+0
+],
+"text": " = -1; // PC port: decompiler artifact (unmatched string switch)"
+}
+]
+},
+"Scripts/Assembly-CSharp/RewiredInputWrapper.cs": {
+"sha1": "a3f83308e6b8a5015cc90db3c011cc3f63834a6a",
+"result_sha1": "6e1f8fa538911ae4ba76a9777d089e8ded7f9953",
+"hunks": [
+{
+"at": 14,
+"removed": [],
+"added": [
+"",
+"\tprivate bool padMapsOff;"
+]
+},
+{
+"at": 70,
+"removed": [],
+"added": [
+"\t\tplayer.controllers.maps.SetMapsEnabled(true, Rewired.ControllerType.Mouse, \"Gameplay Common\"); // PC port: off on the phones and consoles"
+]
+},
+{
+"at": 71,
+"removed": [],
+"added": [
+"\t}",
+"",
+"\t// PC port: while PCPad has an XInput controller it replaces Rewired's joystick maps, and the keyboard or mouse",
+"\t// being touched is noted so hints and the cursor can follow the device in use.",
+"\tprivate void Update()",
+"\t{",
+"\t\tPCPad.Poll();",
+"\t\tif (player == null)",
+"\t\t{",
+"\t\t\treturn;",
+"\t\t}",
+"\t\tif (PCPad.Connected != padMapsOff || Time.frameCount % 120 == 0)",
+"\t\t{",
+"\t\t\tpadMapsOff = PCPad.Connected;",
+"\t\t\tplayer.controllers.maps.SetAllMapsEnabled(!padMapsOff, Rewired.ControllerType.Joystick);",
+"\t\t}",
+"\t\tif (Application.isFocused && (ReInput.controllers.Keyboard.GetAnyButton() || ReInput.controllers.Mouse.GetAnyButton() || (padMapsOff && (player.GetAxisRaw(\"CameraHorizontal\") != 0f || player.GetAxisRaw(\"CameraVertical\") != 0f))))",
+"\t\t{",
+"\t\t\tPCPad.NoteKeyboardOrMouse();",
+"\t\t}",
+"\t}",
+"",
+"\tprivate void OnApplicationQuit()",
+"\t{",
+"\t\tPCPad.StopRumble(); // PC port"
+]
+},
+{
+"at": 75,
+"removed": [
+"10200fc58bc8"
+],
+"added": [
+"\t\tfloat pad = PCPad.Axis(action); // PC port",
+"\t\tif (pad != 0f)",
+"\t\t{",
+"\t\t\treturn pad;",
+"\t\t}",
+"\t\tif (player != null && Application.isFocused) // PC port: Rewired's native mouse keeps reading in the background"
+]
+},
+{
+"at": 84,
+"removed": [],
+"added": [
+"\t\tif (PCKeys.Held(action) || PCPad.Held(action))",
+"\t\t{",
+"\t\t\treturn true; // PC port: keys the Rewired keyboard map leaves out, XInput controllers",
+"\t\t}"
+]
+},
+{
+"at": 93,
+"removed": [],
+"added": [
+"\t\tif (PCKeys.Down(action) || PCPad.Down(action))",
+"\t\t{",
+"\t\t\treturn true; // PC port: keys the Rewired keyboard map leaves out, XInput controllers",
+"\t\t}"
+]
+},
+{
+"at": 102,
+"removed": [],
+"added": [
+"\t\tif (PCKeys.Up(action) || PCPad.Up(action))",
+"\t\t{",
+"\t\t\treturn true; // PC port: keys the Rewired keyboard map leaves out, XInput controllers",
+"\t\t}"
+]
+},
+{
+"at": 111,
+"removed": [],
+"added": [
+"\t\tif (PCPad.Connected)",
+"\t\t{",
+"\t\t\treturn PCPad.InUse; // PC port",
+"\t\t}"
+]
+},
+{
+"at": 121,
+"removed": [],
+"added": [
+"\t\tif (PCPad.Connected)",
+"\t\t{",
+"\t\t\treturn !PCPad.InUse; // PC port",
+"\t\t}"
+]
+},
+{
+"at": 145,
+"removed": [],
+"added": [
+"\t\tif (PCPad.InUse)",
+"\t\t{",
+"\t\t\treturn \"XInput\"; // PC port",
+"\t\t}"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/SimpleGoTo.cs": {
+"sha1": "0e426d6c6eb486c3d0572f604ddcf63e750524c2",
+"result_sha1": "2306412f35f8151fe64be9ab08bf833e6b4a6b07",
+"hunks": [
+{
+"at": 2,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/SniperAttack.cs": {
+"sha1": "c7391ef42eb1799202393b98a3234ae9e4e8e23f",
+"result_sha1": "468d4a43c19819a26bb3424363a329155837bffe",
+"hunks": [
+{
+"at": 2,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/SplashScreen.cs": {
+"sha1": "7e210f46f088ce809decf4682d7e32e71a054541",
+"result_sha1": "6ba24b1ee30165fca6bbc8e2d72e5c234732b8b3",
+"hunks": [
+{
+"at": 33,
+"removed": [],
+"added": [
+"#if UNITY_ANDROID || UNITY_IOS // PC port: no fullscreen movie player on desktop"
+]
+},
+{
+"at": 34,
+"removed": [],
+"added": [
+"#endif"
+]
+}
+]
+},
+"Scripts/Assembly-CSharp/WallCrawlerAI.cs": {
+"sha1": "aa4ccd4969198ec3b5db32b318a0872df7165745",
+"result_sha1": "9f66d6ff2b35cac45f2c12ec9c1e67d33bd3d1f2",
+"hunks": [
+{
+"at": 1,
+"removed": [],
+"added": [
+"using UnityEngine.AI;"
+]
+}
+]
+},
+"Scripts/Assembly-UnityScript/ShaderDatabase.cs": {
+"sha1": "6b9fcfac2415547c2b3014406ac9a32ac4802b96",
+"result_sha1": "94d37308fb7a2319d9308bc2fb7b0e4ae618842c",
+"hunks": [
+{
+"at": 158,
+"line": "acf360b4a92b",
+"keep": [
+57,
+44
+],
+"text": ""
+}
+]
+}
+},
+"delete": [
+"Scripts/Assembly-UnityScript/Detonator Spray Helper.cs",
+"Scripts/Assembly-UnityScript/Detonator-Spray-Helper.cs",
+"Scripts/Assembly-UnityScript/RotateObject+AnimateAlphaFade.cs",
+"Scripts/Assembly-UnityScript/RotateObject+AnimateAlphaMask.cs",
+"Scripts/Assembly-UnityScript/RotateObject-AnimateAlphaFade.cs",
+"Scripts/Assembly-UnityScript/RotateObject-AnimateAlphaMask.cs"
+],
+"move": [
+[
+"Scripts/Assembly-CSharp/Facebook/Unity/Editor/Dialogs/EmptyMockDialog.cs",
+"Scripts/Assembly-CSharp/Facebook/Unity/EditorRuntime/Dialogs/EmptyMockDialog.cs"
+],
+[
+"Scripts/Assembly-CSharp/Facebook/Unity/Editor/Dialogs/MockLoginDialog.cs",
+"Scripts/Assembly-CSharp/Facebook/Unity/EditorRuntime/Dialogs/MockLoginDialog.cs"
+],
+[
+"Scripts/Assembly-CSharp/Facebook/Unity/Editor/Dialogs/MockShareDialog.cs",
+"Scripts/Assembly-CSharp/Facebook/Unity/EditorRuntime/Dialogs/MockShareDialog.cs"
+],
+[
+"Scripts/Assembly-CSharp/Facebook/Unity/Editor/EditorFacebook.cs",
+"Scripts/Assembly-CSharp/Facebook/Unity/EditorRuntime/EditorFacebook.cs"
+],
+[
+"Scripts/Assembly-CSharp/Facebook/Unity/Editor/EditorFacebookGameObject.cs",
+"Scripts/Assembly-CSharp/Facebook/Unity/EditorRuntime/EditorFacebookGameObject.cs"
+],
+[
+"Scripts/Assembly-CSharp/Facebook/Unity/Editor/EditorFacebookLoader.cs",
+"Scripts/Assembly-CSharp/Facebook/Unity/EditorRuntime/EditorFacebookLoader.cs"
+],
+[
+"Scripts/Assembly-CSharp/Facebook/Unity/Editor/EditorFacebookMockDialog.cs",
+"Scripts/Assembly-CSharp/Facebook/Unity/EditorRuntime/EditorFacebookMockDialog.cs"
+]
+],
+"move_meta": [
+[
+"Scripts/Assembly-UnityScript/Detonator Spray Helper.cs.meta",
+"Scripts/Assembly-UnityScript/DetonatorSprayHelper.cs.meta"
+]
+]
+}

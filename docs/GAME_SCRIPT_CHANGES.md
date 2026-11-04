@@ -1,6 +1,8 @@
 # Changes to the game's own scripts
 
-The game's scripts are copyrighted, so they aren't in this repository. This list describes every change the port makes to them, so you can make the same changes to your own export. Only the port's own added code is shown.
+The game's scripts are copyrighted, so they aren't in this repository. This list describes every change the port makes to them. Only the port's own added code is shown.
+
+The [converter](../BUILDING.md) makes all of these changes for you: the script changes are in `converter/patches.json`, and the others are stages of `converter/convert.py`. Keep this list up to date when you change a game script, so a reviewer can follow what the patch does.
 
 ## Input
 
@@ -36,6 +38,15 @@ The game's scripts are copyrighted, so they aren't in this repository. This list
 - At the start of `ApplyDamage`: if this model is the `PlayerModel`, is alive and the damage is above zero, call `PCPad.RumbleHurt(attackInfo.damage >= damageHeavyLimit)`. If the attacker is the `PlayerModel` and this model is alive, call `PCPad.RumbleStrike` with the same test.
 - Add a private `RumbleSlice(AttackInfo)` that calls `PCPad.RumbleSlice()` if the attacker is the `PlayerModel`, and call it first in the `HorizontalCut`/`Disc` and `VerticalCut`/`Uppercut` cases of `ApplyFatalDamage`.
 
+### `Resources/Rewired Input Manager.prefab`
+
+The gamepad layout, for pads the game's input library reads itself. `PCPad` reads XInput pads directly. In the gameplay map of the gamepad template (`categoryId: 2`):
+
+- Action 8 moves from element 5 to element 8, and action 19 from element 8 to element 5, so execution is on B and ranged on Y.
+- The entry for action 12 on element 16 goes, so the guide button no longer pauses.
+
+The converter's `rewired` stage does this.
+
 ## Text and tips
 
 ### `Localization.cs`
@@ -60,7 +71,8 @@ The game's scripts are copyrighted, so they aren't in this repository. This list
 
 ### Shaders
 
-- `Mobile/Bumped Specular`, `Mobile/Bumped Diffuse`, `Mobile/Diffuse` and `AMG/Bumped Specular RimLight`: remove `noforwardadd`.
+- AssetRipper can only export placeholders for the game's compiled shaders. The converter's `shaders.py` and `family_shaders.py` give each one code written for the port, keeping the header from your export, and Unity's own shaders come from its public source.
+- `Mobile/Bumped Specular`, `Mobile/Bumped Diffuse`, `Mobile/Diffuse` and `AMG/Bumped Specular RimLight`: no `noforwardadd`, or Enhanced lighting does nothing.
 
 ## Crashes in the original code
 
@@ -88,7 +100,7 @@ The game's scripts are copyrighted, so they aren't in this repository. This list
 - `Interpolate.cs`: replace the decompiler's mangled `GetEnumerator` calls with a cast to `IEnumerable<float>`.
 - `DepthOfFieldScatter.cs`: use `ComputeBufferType.IndirectArguments`.
 - `ShaderDatabase.cs`: use `StartCoroutine` in place of `StartCoroutine_Auto`.
-- `Detonator Spray Helper`: rewrite the UnityScript class as C# named `DetonatorSprayHelper`, keeping the `.meta` GUID so the prefabs still bind. Delete the broken `RotateObject-AnimateAlphaFade.cs`.
+- `Detonator Spray Helper`: a UnityScript class whose name C# can't spell. The converter takes the decompiled class from the Decompiled export, renames it `DetonatorSprayHelper`, and keeps the `.meta` GUID so the prefabs still bind. Delete the broken `RotateObject-AnimateAlphaFade.cs`.
 - Move the Facebook SDK's mis-filed `Editor` folder so it isn't compiled into the player.
 
 ## Project settings

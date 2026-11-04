@@ -53,7 +53,7 @@ public static class PCPortBuild
 	// licences of everything third party the port uses into licenses\.
 	private static void CopyThirdParty(string outDir)
 	{
-		string ext = Path.GetFullPath(Path.Combine(Application.dataPath, "../../../tools/ext"));
+		string ext = GetArg("-pcPortExt") ?? Path.GetFullPath(Path.Combine(Application.dataPath, "../../../tools/ext"));
 		string[,] files =
 		{
 			{ "dlss/lib/Windows_x86_64/rel/nvngx_dlss.dll", "nvngx_dlss.dll" },

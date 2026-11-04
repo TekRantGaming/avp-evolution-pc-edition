@@ -23,3 +23,12 @@ launcher/payload_extra/
 *.lib
 tools/ext/
 tools/Unity567/
+tools/AssetRipper/
+tools/builtin_shaders/
+*.zip
+
+# The converter's pack (built from unity/) and anything a run leaves behind
+converter/pack/
+converter/tools/
+__pycache__/
+unity/Assets/PostProcessing/

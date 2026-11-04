@@ -60,9 +60,9 @@
 
 **You need:** Windows 10 or 11 (64 bit) with a DirectX 11 graphics card, and your own copy of the Android game: the `.apk` and its `.obb`, from your purchase on Google Play.
 
-**Where things stand:** the port runs and the launcher works, but the game's assets currently go into each build, so a build can't be shared. A release has to build the game on your PC from your own files instead, and that converter is the next big job. Until then, there is nothing to download here.
+**Where things stand:** the port runs, and the converter builds the whole game on your PC from your own files in 15 to 30 minutes, so no game files ever need to be shared. The launcher doesn't run the converter for you yet, and that's the last step before a release. Until then, there is nothing to download here.
 
-For now you can read the code, or follow [BUILDING.md](BUILDING.md) if you have your own copy and some patience. **Please don't ask for builds or game files.**
+For now you can read the code, or follow [BUILDING.md](BUILDING.md) to build it yourself if you have your own copy. **Please don't ask for builds or game files.**
 
 ### Which files you need
 
@@ -152,6 +152,7 @@ The port uses the [TRG Launcher](https://github.com/TekRantGaming/trg-launcher) 
 - **XeSS** needs an Intel Arc graphics card, and falls back to FSR 1 on other cards. So does DLSS on cards that don't support it
 - Some recent changes (the controller layout, rumble and the softer character lights) still need testing in a full play session
 - Some players have reported texture popping, and the cause hasn't been found yet
+- **Converter builds** use shaders written for the port. Overall brightness matches the original's, but a few small lamps come out whiter than they should, and the cloak, thermal vision and some other effects haven't been checked on screen yet
 
 ### Reporting a problem
 
@@ -166,7 +167,7 @@ The game was built in Unity, so instead of translating the Android program, this
 <details>
 <summary><b>Building from source (for developers)</b></summary>
 
-See [BUILDING.md](BUILDING.md). The game's scripts, shaders and assets are not in this repository, so building needs your own copy of the game, and the small changes made to the game's own scripts are described in [docs/GAME_SCRIPT_CHANGES.md](docs/GAME_SCRIPT_CHANGES.md). The story of the port, and the rendering problems that had to be solved along the way, is in [docs/PORTING_NOTES.md](docs/PORTING_NOTES.md).
+See [BUILDING.md](BUILDING.md). The game's scripts, shaders and assets are not in this repository, so building needs your own copy of the game: the converter in `converter` rebuilds it from that copy. The changes made to the game's own scripts are described in [docs/GAME_SCRIPT_CHANGES.md](docs/GAME_SCRIPT_CHANGES.md). The story of the port, and the rendering problems that had to be solved along the way, is in [docs/PORTING_NOTES.md](docs/PORTING_NOTES.md).
 
 </details>
 
