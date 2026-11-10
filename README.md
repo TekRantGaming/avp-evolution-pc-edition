@@ -4,14 +4,15 @@
 
 ### AVP Evolution on PC, rebuilt with modern graphics, real controller support and a launcher made for the couch.
 
-<img src="https://img.shields.io/badge/Download-Not%20released%20yet-5b7a8c?style=for-the-badge&logo=windows&logoColor=white&labelColor=0a1420" alt="No download yet" height="44">
+[<img src="https://img.shields.io/badge/Download-Windows%20x64-1ea0dc?style=for-the-badge&logo=windows&logoColor=white&labelColor=0a1420" alt="Download for Windows" height="44">](https://github.com/TekRantGaming/avp-evolution-pc-edition/releases/latest)
 &nbsp;
 [<img src="https://img.shields.io/badge/Discord-Join%20the%20community-5865F2?style=for-the-badge&logo=discord&logoColor=white&labelColor=0a1420" alt="Join the Discord" height="44">](https://discord.gg/8eakYSvBZS)
 
 ![Platform](https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-5b7a8c?style=flat-square&labelColor=0a1420)
 ![Engine](https://img.shields.io/badge/engine-Unity%205.6-1ea0dc?style=flat-square&labelColor=0a1420)
 ![Upscalers](https://img.shields.io/badge/upscalers-DLSS%20%7C%20FSR%20%7C%20XeSS-1ea0dc?style=flat-square&labelColor=0a1420)
-![Status](https://img.shields.io/badge/status-source%20only-5b7a8c?style=flat-square&labelColor=0a1420)
+[![Latest release](https://img.shields.io/github/v/release/TekRantGaming/avp-evolution-pc-edition?style=flat-square&label=release&color=1ea0dc&labelColor=0a1420)](https://github.com/TekRantGaming/avp-evolution-pc-edition/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/TekRantGaming/avp-evolution-pc-edition/total?style=flat-square&color=1ea0dc&labelColor=0a1420)](https://github.com/TekRantGaming/avp-evolution-pc-edition/releases)
 
 <br>
 
@@ -21,14 +22,11 @@
 <img src="docs/images/predator-hangar.jpg" alt="The Predator in a hangar" width="32%">
 <img src="docs/images/marine-fight.jpg" alt="The Predator facing a Marine in a side mission" width="32%">
 
-<sub>The 2013 Android game rebuilt in Unity for Windows, with a new PC layer on top. <b>No game files included</b>: this repository holds the port's own code only, and you need your own purchased copy of the game.</sub>
+<sub>The 2013 Android game rebuilt in Unity for Windows, with a new PC layer on top. <b>No game files included</b>: the launcher builds the game on your PC from your own purchased copy.</sub>
 
 </div>
 
 <br>
-
-> [!NOTE]
-> **There are no release builds yet.** This repository is the source code of the port. See [Getting started](#getting-started) for where things stand.
 
 ## At a glance
 
@@ -60,9 +58,15 @@
 
 **You need:** Windows 10 or 11 (64 bit) with a DirectX 11 graphics card, and your own copy of the Android game: the `.apk` and its `.obb`, from your purchase on Google Play.
 
-**Where things stand:** the port runs, and the converter builds the whole game on your PC from your own files in 15 to 30 minutes, so no game files ever need to be shared. The launcher doesn't run the converter for you yet, and that's the last step before a release. Until then, there is nothing to download here.
+1. Download **AVPEvolutionPC-...-windows-x64.zip** from the [latest release](https://github.com/TekRantGaming/avp-evolution-pc-edition/releases/latest) and unzip it somewhere with about **15 GB free**. It holds the launcher and the PC port, and no game files.
+2. Put your `.apk` and `.obb` together in one folder.
+3. Run **avp_launcher.exe**. Windows may warn about an unknown publisher the first time: choose **More info**, then **Run anyway**.
+4. Choose **Install** and point the launcher at your `.apk`. It finds the `.obb` beside it.
+5. The launcher **builds the game on your PC** from your files. It downloads the free tools it needs (Python, AssetRipper and Unity 5.6.7), and Windows asks for permission to install Unity. The first time, Unity opens for you to sign in with a free Unity account: choose **Personal**, close Unity, and choose **Install** again.
+6. Wait about half an hour, most of it Unity's build. You can **Cancel**, and Install carries on where it stopped. Once it's done, the 12 GB of work files are removed and the game takes 1.5 GB.
+7. Press **Play**.
 
-For now you can read the code, or follow [BUILDING.md](BUILDING.md) to build it yourself if you have your own copy. **Please don't ask for builds or game files.**
+While you play, **hold View and Menu** on the controller, or **hold Esc**, to come back to the launcher. **Please don't ask for builds or game files**: they never leave your PC.
 
 ### Which files you need
 
