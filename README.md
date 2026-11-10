@@ -36,7 +36,8 @@
 | 🎮 **Xbox-style controllers** read directly, with **rumble** | 🔘 **Button glyphs** in tips, on the HUD and on the controls screen, Xbox or PlayStation | ⌨️ **Keyboard and mouse** with mouse look and proper PC wording |
 | 🌅 **HDR bloom, SSAO, ACES tone mapping** and a colour grade for each campaign | 🔦 **Volumetric light shafts** and **realtime character shadows** | 🧽 **SMAA, FXAA or TAA**, and **16x texture filtering** |
 | 🖼️ **1024 character and weapon textures**, the set phones never used | 💡 **Enhanced lighting**: characters pick up the colour of the lamps around them | 🚀 **Uncapped frame rate**, a frame limiter and V-Sync |
-| 🛋️ **A console style launcher** with presets and every setting in one place | 📦 **Installs from your own** `.apk` and `.obb` | ↩️ **Back to the launcher** any time: hold Esc, or hold View + Menu |
+| 🛋️ **A console style launcher** with presets and every setting in one place | 📦 **Builds the game on your PC** from your own `.apk` and `.obb` | ↩️ **Back to the launcher** any time: hold Esc, or hold View + Menu |
+| 🪟 **Fullscreen, borderless or windowed** | 🎚️ **Presets** from the phone game's look to Ultra | 📐 **A HUD you can resize**, kept at the screen edges on ultrawide |
 
 ## The game
 
@@ -88,34 +89,42 @@ Get-FileHash "C:\Games\com.fde.avpevolution_2.1.apk" -Algorithm SHA1
 
 ## The launcher
 
-The port uses the [TRG Launcher](https://github.com/TekRantGaming/trg-launcher) 2.0. Everything is set up before the game starts, with a controller, the keyboard or the mouse.
+The port uses the [TRG Launcher](https://github.com/TekRantGaming/trg-launcher) 2.0: a console style dashboard with sounds, made to be used with a controller, the keyboard or the mouse. Everything is set up before the game starts, and Home also shows the other TRG projects.
 
 ### Install from your own files
 - Point the launcher at your `.apk` and `.obb`
 - A card shows **exactly which files work**: version, size and hashes
 - It checks the package really is AVP Evolution before it does anything
 - It then **builds the game on your PC** from those files: it downloads the free tools it needs (AssetRipper, Python and Unity 5.6.7), and Unity asks you to sign in with a free account the first time. It takes about half an hour and 12 GB of free space while it runs
+- Every download is **checked against a fixed checksum** before it's used
+- **Cancel** any time: choose Install again and it carries on where it stopped
+- Once the game is built, the **work files are removed**, and the launcher's pictures of the game are made from your own copy
 
 ### Display and Graphics
-- **Fullscreen** or **windowed**, resolution and **V-Sync**
-- **Frame rate**: a limit of your choice, or **no limit**
+- **Fullscreen**, **borderless** or **windowed**, at your screen's **native resolution** or a size of your choice, up to 5120 x 1440
+- **V-Sync**, and a **frame rate limit** from 30 to 240, or **no limit**
 - **Upscaler**: DLSS, FSR 1 or XeSS, with their quality modes
-- **Presets**, or set each option yourself
-- **Anti aliasing**, **texture filtering**, **shadows**, **ambient occlusion**, **draw distance**, **bloom**, **tone mapping**, **colour grading**, **light shafts** and **enhanced lighting**
-- **Field of view**, and a **HUD** you can scale and keep near the middle on ultrawide screens
+- **Presets**: **Original** looks like the phone game, then **Balanced**, **Enhanced** and **Ultra**. Change any option to make your own mix
+- **Anti aliasing**, **texture filtering**, **character shadows**, **ambient occlusion**, **draw distance**, **bloom**, **tone mapping**, **auto exposure**, **colour grading** for each campaign, **light shafts** and **enhanced lighting**
+
+### Camera and HUD
+- **Field of view** from 50 to 100. The phone game used 60
+- **HUD size** from 50% to 150%
+- On wide and ultrawide screens, the HUD stays at the **screen edges** or in the middle 16:9 area, as you choose
+- **Button prompts**: automatic (whichever you used last), Xbox, PlayStation or keyboard
 
 ### Controls
 - **Mouse** and **stick sensitivity**, and **invert vertical look**
-- **Capture the mouse** while you play
-- **Controller rumble** on or off
-- **Button glyphs**: automatic, Xbox, PlayStation or keyboard
-- The full list of **keys and buttons**
+- **Capture the mouse** while you play a level. Menus and the pause screen free it
+- **Controller rumble**: a small pulse when you strike, a heavy one when you're hit, and both sides when you slice an enemy
+- The full list of **keys and buttons**, also on screen with <kbd>F1</kbd> in a level
 
 ## Android vs PC
 
 | | Android | PC |
 | --- | :---: | :---: |
 | Resolution | the phone's screen | native, up to 4K and ultrawide |
+| Window | full screen | fullscreen, borderless or windowed |
 | Frame rate | depends on the device | V-Sync, a limit of your choice, or no limit |
 | Upscaling | none | DLSS, FSR 1 or XeSS |
 | Anti aliasing | mobile | SMAA, FXAA or TAA |
@@ -125,6 +134,8 @@ The port uses the [TRG Launcher](https://github.com/TekRantGaming/trg-launcher) 
 | Shadows | mobile | realtime character shadows, up to 4 cascades |
 | Controls | touch screen | controller with rumble, keyboard and mouse |
 | Prompts | touch buttons | Xbox, PlayStation or keyboard glyphs and wording |
+| Field of view | 60 | 50 to 100 |
+| HUD | fixed size, 16:9 | 50% to 150%, at the edges of ultrawide screens |
 
 ## Good to know
 
@@ -150,6 +161,7 @@ The port uses the [TRG Launcher](https://github.com/TekRantGaming/trg-launcher) 
 | --- | --- |
 | Hold <kbd>View</kbd> + <kbd>Menu</kbd>, or hold <kbd>Esc</kbd> | back to the launcher while playing |
 | <kbd>F1</kbd> | the controls, in a level |
+| <kbd>Enter</kbd>, <kbd>Space</kbd> or <kbd>A</kbd> | start a level from its loading screen |
 
 ### Known limits
 
